@@ -10,5 +10,5 @@ fn main() {
         std::env::set_var("GDK_BACKEND", "x11");
     }
 
-    rechnung_lib::run()
+    vibebill_lib::run()
 }
