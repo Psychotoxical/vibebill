@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "VibeBill",
-  "version": "1.0.27",
+  "version": "1.0.28",
   "identifier": "de.stelle.vibebill",
   "build": {
     "beforeDevCommand": "npm run dev",
