@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.27] - 2026-03-21
+
+### Added
+- **EU VAT Dropdown**: Tax rate fields throughout the app (line items, shipping, seller defaults) now use a styled dropdown pre-populated with all 16 standard EU VAT rates (0 % – 27 %) instead of a free-text number input.
+- **Custom Dropdown Component** (`AppSelect`): Replaces all native `<select>` elements. Dropdowns now match the app's visual style on every platform, eliminating inconsistent OS-native rendering on Linux/Windows.
+- **Custom Tooltip System**: Replaced native browser `title` attributes with a CSS-driven `data-tooltip` implementation. Sidebar tooltips appear to the right; all other tooltips appear above. Fully styled and theme-aware.
+- **Double-Click Save Protection**: The invoice save button is protected against accidental double-submission via an `isSaving` guard.
+- **CLAUDE.md**: Added AI assistant guidance file documenting architecture decisions, design system, and release process.
+
+### Changed
+- **Complete UI Redesign**:
+  - Accent colour changed from generic blue to Violet (`#7c3aed` / Violet 600).
+  - Background palette switched from Tailwind Slate (blue-tinted greys) to Zinc (neutral greys: `#18181b`, `#09090b`).
+  - All dark-mode hardcoded values updated to match the new Zinc palette.
+- **Typography**: Switched from Inter to **Plus Jakarta Sans** for a more refined, open letterform.
+- **Icons**: Replaced all emoji icons throughout navigation, action buttons, toasts, and empty states with consistent **Lucide** SVG icons.
+- **Financial Precision**: All net/tax/gross calculations now use `decimal.js` with `ROUND_HALF_UP`, replacing raw JavaScript floating-point arithmetic.
+- **Invoice Form Refactored**: Extracted `InvoiceItemsTable`, `QuickCustomerModal`, `QuickSellerModal`, and `QuickProductModal` out of the monolithic `InvoiceFormView.vue` (reduced from ~1 057 to ~290 lines).
+- **Card Border Radius**: Added `overflow: hidden` to `.card` so table content is properly clipped to rounded corners.
+- **Number Input Spinners**: Browser-native up/down arrows on `<input type="number">` are now hidden globally to prevent value text from overlapping the controls.
+- **About Page**: Replaced the personal vibecoding statement with a clean technology stack listing and acknowledgement credit.
+- **License**: Changed from MIT to **GPL-3.0**.
+
+### Fixed
+- **Content Security Policy**: The Tauri CSP was previously set to `null` (disabled). Now enforces a strict allowlist policy.
+- **KDE Plasma Titlebar**: Fixed GNOME-style client-side decorations appearing under KDE Plasma by setting `GDK_BACKEND=x11` to force XWayland, allowing KWin to apply native server-side decorations.
+- **Dropdown Arrow Rendering**: Fixed a CSS specificity bug where the `background` shorthand overrode the custom SVG arrow on `<select>` elements.
+- **Database Migration Error Handling**: Migrations now only silently ignore `duplicate column` errors; all other errors are re-thrown instead of being swallowed.
+
 ## [1.0.26] - 2026-02-27
 
 ### Added

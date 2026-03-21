@@ -11,10 +11,12 @@
         <div class="card-body">
           <div class="form-group">
             <label class="form-label">{{ $t('settings.languageHint') }}</label>
-            <select class="form-select" style="max-width: 200px" v-model="language" @change="changeLanguage">
-              <option value="de">Deutsch</option>
-              <option value="en">English (UK)</option>
-            </select>
+            <AppSelect
+              v-model="language"
+              :options="[{ value: 'de', label: 'Deutsch' }, { value: 'en', label: 'English (UK)' }]"
+              style="max-width: 200px"
+              @change="() => changeLanguage()"
+            />
           </div>
         </div>
       </div>
@@ -28,7 +30,7 @@
             <div class="flex gap-2 items-center">
               <input class="form-input" v-model="downloadFolder" readonly :placeholder="$t('settings.folderPlaceholder')" style="flex: 1" />
               <button class="btn btn-secondary btn-sm" @click="pickFolder">{{ $t('settings.chooseFolder') }}</button>
-              <button class="btn btn-ghost btn-sm" v-if="downloadFolder" @click="downloadFolder = ''; saveSetting('download_folder', '')">✕</button>
+              <button class="btn btn-ghost btn-sm" v-if="downloadFolder" @click="downloadFolder = ''; saveSetting('download_folder', '')"><X :size="14" /></button>
             </div>
             <div class="form-hint">{{ $t('settings.folderHint') }}</div>
           </div>
@@ -55,13 +57,17 @@
       <div class="card mb-4">
         <div class="card-header"><h2>{{ $t('settings.about') }}</h2></div>
         <div class="card-body">
-          <div style="display: flex; flex-direction: column; gap: 8px; font-size: var(--font-size-sm); color: var(--text-secondary)">
-            <div><strong style="color: var(--text-primary)">{{ $t('app.title') }}</strong> – {{ $t('app.subtitle') }}</div>
+          <div style="display: flex; flex-direction: column; gap: 12px; font-size: var(--font-size-sm); color: var(--text-secondary)">
+            <div><strong style="color: var(--text-primary); font-size: var(--font-size-base)">{{ $t('app.title') }}</strong> – {{ $t('app.subtitle') }}</div>
             <div>
               {{ $t('settings.aboutDescription1') }}<br>
               {{ $t('settings.aboutDescription2') }}
             </div>
-            <div style="font-style: italic; white-space: pre-wrap; margin: 8px 0;">{{ $t('settings.vibecoded') }}</div>
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <strong style="color: var(--text-primary)">{{ $t('settings.techStack') }}</strong>
+              <div>Tauri v2 &middot; Vue 3 &middot; TypeScript &middot; Vite &middot; SQLite &middot; decimal.js &middot; Lucide Icons &middot; Plus Jakarta Sans</div>
+            </div>
+            <div style="color: var(--accent); font-weight: 500">{{ $t('settings.madeWith') }}</div>
             <div>
               {{ $t('settings.copyright') }}<br>
               {{ $t('settings.version') }}: {{ appVersion }}
@@ -80,6 +86,8 @@ import { useI18n } from 'vue-i18n';
 import { getSetting, setSetting } from '../services/database';
 import { open, save } from '@tauri-apps/plugin-dialog';
 import { copyFile } from '@tauri-apps/plugin-fs';
+import { X } from 'lucide-vue-next';
+import AppSelect from '../components/AppSelect.vue';
 import { appConfigDir, join } from '@tauri-apps/api/path';
 import { getVersion } from '@tauri-apps/api/app';
 

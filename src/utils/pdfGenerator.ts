@@ -3,6 +3,7 @@ import { save, confirm } from '@tauri-apps/plugin-dialog';
 import { create, exists } from '@tauri-apps/plugin-fs';
 import { getSeller, getCustomer, getSetting, type Invoice, type Seller, type Customer } from '../services/database';
 import i18n from '../i18n';
+import { calcTax, addToMap } from './money';
 
 function t(key: string, params?: Record<string, string | number>): string {
     const { global } = i18n;
@@ -248,17 +249,15 @@ export function buildInvoicePdfDoc(invoice: Invoice, seller: Seller, customer: C
     // Tax breakdown
     const taxMap: Record<number, number> = {};
     for (const item of items) {
-        if (!taxMap[item.tax_rate]) taxMap[item.tax_rate] = 0;
-        taxMap[item.tax_rate] += item.total_tax;
+        addToMap(taxMap, item.tax_rate, item.total_tax);
     }
 
     // Add shipping tax to taxMap
     const sNet = typeof invoice.shipping_net === 'number' ? invoice.shipping_net : 0;
     if (sNet > 0) {
         const sRate = typeof invoice.shipping_tax_rate === 'number' ? invoice.shipping_tax_rate : 19;
-        const sTax = Math.round(sNet * sRate) / 100;
-        if (!taxMap[sRate]) taxMap[sRate] = 0;
-        taxMap[sRate] += sTax;
+        const sTax = calcTax(sNet, sRate);
+        addToMap(taxMap, sRate, sTax);
 
         doc.setFontSize(9);
         doc.text(t('pdf.shippingNet'), labelX, y, { align: 'right' });

@@ -1,62 +1,66 @@
-# VibeBill - Modern Invoice Management
+# VibeBill
 
-A beautiful, local-first Desktop Application for managing your customers, products, and invoices. Built for freelancers and small businesses who value data privacy and offline capability.
+A fast, offline-first desktop application for managing invoices, customers, and products. Built for freelancers and small businesses who value data privacy and simplicity.
 
 ![VibeBill Screenshot](screenshot.png)
 
-## ✨ Features
+## Features
 
-- **📊 Dashboard Overview**: Keep track of unpaid invoices, monthly revenue, and top customers.
-- **💼 Customer & Product Management**: Store your clients and reusable products/services locally for quick invoice creation.
-- **🧾 Beautiful PDF Exports**: Generate professional PDF invoices with automatic tax and total calculations.
-- **🌓 Dark Mode**: Seamless support for Light and Dark themes.
-- **🌐 Bilingual Support**: Available in German and English.
-- **🔒 Local & Private**: 100% offline-first. Your data stays on your machine in a local SQLite database – no subscriptions, no cloud.
-- **💾 Backup & Restore**: Easily export and import your `.db` database to secure your data or move to another machine.
+- **Dashboard**: Overview of open invoices, monthly revenue, and top customers.
+- **Invoice Management**: Create, edit, duplicate, and export invoices as PDF. Track partial payments per invoice.
+- **Seller Profiles**: Multiple seller identities with individual branding, bank details, and invoice defaults.
+- **Customer & Product Catalogs**: Reusable clients and products/services for fast invoice creation.
+- **EU VAT Support**: Dropdown with all 16 standard EU VAT rates across all relevant input fields.
+- **PDF Export**: Three PDF templates (Classic, Modern, Minimal) with automatic tax breakdown, shipping costs, and brand colours.
+- **CSV Export**: Export filtered invoice lists for use in spreadsheets or accounting tools.
+- **Yearly Overview**: Generate a per-seller yearly revenue summary PDF.
+- **Dark Mode**: Full light and dark theme support.
+- **Bilingual**: German and English interface.
+- **Local & Private**: 100% offline. Data is stored in a local SQLite database — no cloud, no subscriptions, no tracking.
+- **Backup & Restore**: Export and import the `.db` file directly from Settings.
 
-## 🛠️ Technology Stack
+## Technology Stack
 
-- **[Tauri v2](https://v2.tauri.app/)**: Rust-based framework for building tiny, fast, and secure desktop applications.
-- **[Vue 3](https://vuejs.org/)**: The progressive JavaScript framework for the frontend interface.
-- **[Vite](https://vitejs.dev/)**: Next-generation frontend tooling.
-- **[TypeScript](https://www.typescriptlang.org/)**: Strongly typed programming language.
-- **SQLite**: Using Tauri's SQL plugin for local data persistence.
+| | |
+|---|---|
+| Desktop framework | [Tauri v2](https://v2.tauri.app/) (Rust) |
+| Frontend | [Vue 3](https://vuejs.org/) + TypeScript |
+| Build tool | [Vite](https://vitejs.dev/) |
+| Database | SQLite via Tauri SQL plugin |
+| Financial precision | [decimal.js](https://mikemcl.github.io/decimal.js/) |
+| Icons | [Lucide](https://lucide.dev/) |
+| Typography | Plus Jakarta Sans |
 
-## 📥 Download & Installation
+## Download
 
-You can find the latest release for your platform (Windows, macOS, Linux) under the **[Releases](https://github.com/Psychotoxical/invoice/releases)** tab.
+Pre-built binaries for Linux, Windows, and macOS are available under [Releases](https://github.com/Psychotoxical/vibebill/releases).
 
-For a detailed list of new features and fixes across updates, see the **[Changelog](CHANGELOG.md)**.
+| Platform | Formats |
+|---|---|
+| Linux | `.deb`, `.rpm`, `.AppImage` |
+| Windows | `.exe` (NSIS), `.msi` |
+| macOS | `.dmg` (Intel + Apple Silicon) |
 
-## 🚀 Development Setup
+## Building from Source
 
-If you want to contribute or build the application yourself, make sure you have the [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/) installed (Node.js, Rust, and system dependencies).
+Requires [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/) (Node.js, Rust, and platform dependencies).
 
 ```bash
-# Clone the repository
-git clone https://github.com/Psychotoxical/invoice.git
-cd invoice
-
-# Install dependencies
+git clone https://github.com/Psychotoxical/vibebill.git
+cd vibebill
 npm install
 
-# Run in development mode
+# Development
 npm run tauri dev
 
-# Build for production
+# Production build
 npm run tauri build
 ```
 
-## 📜 License
+## Changelog
 
-This project is licensed under the **MIT License**. See the `LICENSE` file for details.
+See [CHANGELOG.md](CHANGELOG.md) for a full version history.
 
----
+## License
 
-*Note: This application was entirely **vibecoded**.*
-
-The reason for this is that I had been searching for a simple invoicing tool to cover my needs for ages. However, the tools I found were either massive ERP systems, too expensive, poorly designed, or stuffed with ads. 
-
-I know that *vibecoding* doesn't have the best reputation in parts of the Open Source community. To those critics, I have a simple tip: just don't use it and keep scrolling. And to everyone else who actually has a use for this tool: I hope you enjoy the app!
-
-Thankfully, *vibecoding* has given me the incredible opportunity to bring my many ideas to life—ideas that I simply do not have the technical skills to build myself. A huge thank you to Antigravity for making this possible! 😉
+[GNU General Public License v3.0](LICENSE)

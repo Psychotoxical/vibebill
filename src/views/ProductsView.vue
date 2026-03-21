@@ -10,13 +10,10 @@
       <div class="toolbar">
         <div class="toolbar-left">
           <div class="search-bar" style="max-width: 260px; width: 100%">
-            <span class="search-icon">🔍</span>
+            <span class="search-icon"><Search :size="15" /></span>
             <input class="form-input" v-model="search" :placeholder="$t('products.searchPlaceholder')" />
           </div>
-          <select class="form-select" style="width: auto" v-model="filterSeller">
-            <option :value="0">{{ $t('products.allSellers') }}</option>
-            <option v-for="s in sellers" :key="s.id" :value="s.id">{{ s.name }}</option>
-          </select>
+          <AppSelect v-model="filterSeller" :options="sellerOptions" />
         </div>
       </div>
       <div class="tabs">
@@ -56,14 +53,14 @@
                 <td class="text-right">{{ p.tax_rate }}%</td>
                 <td class="text-right" v-if="activeTab !== 'service'">{{ p.type === 'product' ? p.stock : '—' }}</td>
                 <td class="actions-cell">
-                  <button class="btn btn-ghost btn-sm" @click="openForm(p)">✏️</button>
-                  <button class="btn btn-ghost btn-sm" @click="confirmDelete(p)">🗑️</button>
+                  <button class="btn btn-ghost btn-sm" @click="openForm(p)"><Pencil :size="15" /></button>
+                  <button class="btn btn-ghost btn-sm" @click="confirmDelete(p)"><Trash2 :size="15" /></button>
                 </td>
               </tr>
             </tbody>
           </table>
           <div class="empty-state" v-else-if="!search && !filterSeller">
-            <div class="empty-icon">📦</div>
+            <div class="empty-icon"><Package :size="40" /></div>
             <div class="empty-title">{{ $t('products.noProducts') }}</div>
             <div class="empty-desc">{{ $t('products.createFirst') }}</div>
             <button class="btn btn-primary" @click="openForm()">{{ $t('products.newProduct') }}</button>
@@ -80,23 +77,20 @@
       <div class="modal">
         <div class="modal-header">
           <h2>{{ editing ? $t('products.editProduct') : $t('products.newProductTitle') }}</h2>
-          <button class="btn btn-ghost btn-icon" @click="confirmClose">✕</button>
+          <button class="btn btn-ghost btn-icon" @click="confirmClose"><X :size="16" /></button>
         </div>
         <div class="modal-body">
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">{{ $t('products.seller') }} *</label>
-              <select class="form-select" v-model.number="form.seller_id">
-                <option :value="0" disabled>{{ $t('common.choose') }}</option>
-                <option v-for="s in sellers" :key="s.id" :value="s.id">{{ s.name }}</option>
-              </select>
+              <AppSelect v-model="form.seller_id" :options="sellerModalOptions" :placeholder="$t('common.choose')" />
             </div>
             <div class="form-group">
               <label class="form-label">{{ $t('products.type') }} *</label>
-              <select class="form-select" v-model="form.type">
-                <option value="product">{{ $t('products.typeProduct') }}</option>
-                <option value="service">{{ $t('products.typeService') }}</option>
-              </select>
+              <AppSelect v-model="form.type" :options="[
+                { value: 'product', label: $t('products.typeProduct') },
+                { value: 'service', label: $t('products.typeService') },
+              ]" />
             </div>
           </div>
           <div class="form-group">
@@ -111,14 +105,14 @@
           <div class="form-row-3">
             <div class="form-group">
               <label class="form-label">{{ $t('products.unit') }}</label>
-              <select class="form-select" v-model="form.unit">
-                <option value="Stk">{{ $t('products.unitPc') }}</option>
-                <option value="Std">{{ $t('products.unitHour') }}</option>
-                <option value="Pausch.">{{ $t('products.unitFlat') }}</option>
-                <option value="kg">{{ $t('products.unitKg') }}</option>
-                <option value="m">{{ $t('products.unitM') }}</option>
-                <option value="Lizenz">{{ $t('products.unitLicense') }}</option>
-              </select>
+              <AppSelect v-model="form.unit" :options="[
+                { value: 'Stk', label: $t('products.unitPc') },
+                { value: 'Std', label: $t('products.unitHour') },
+                { value: 'Pausch.', label: $t('products.unitFlat') },
+                { value: 'kg', label: $t('products.unitKg') },
+                { value: 'm', label: $t('products.unitM') },
+                { value: 'Lizenz', label: $t('products.unitLicense') },
+              ]" />
             </div>
             <div class="form-group" style="display: flex; flex-direction: column; justify-content: center;">
               <label class="form-label" style="opacity: 0; margin-bottom: 4px;">isGross</label>
@@ -178,6 +172,8 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
+import { Search, Pencil, Trash2, Package, X } from 'lucide-vue-next';
+import AppSelect from '../components/AppSelect.vue';
 import { useI18n } from 'vue-i18n';
 import { getProducts, createProduct, updateProduct, deleteProduct, getSellers, type Product, type Seller } from '../services/database';
 import { useToast } from '../composables/useToast';
@@ -193,6 +189,15 @@ const activeTab = ref('all');
 const showModal = ref(false);
 const editing = ref(false);
 const deleteTarget = ref<Product | null>(null);
+
+const sellerOptions = computed(() => [
+  { value: 0, label: t('products.allSellers') },
+  ...sellers.value.map(s => ({ value: s.id as number, label: s.name })),
+]);
+
+const sellerModalOptions = computed(() => [
+  ...sellers.value.map(s => ({ value: s.id as number, label: s.name })),
+]);
 
 const formIsGross = ref(false);
 const formDisplayPrice = ref(0);

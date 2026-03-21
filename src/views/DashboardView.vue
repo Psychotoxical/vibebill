@@ -98,7 +98,7 @@
             </tbody>
           </table>
           <div class="empty-state" v-else>
-            <div class="empty-icon">📋</div>
+            <div class="empty-icon"><FileText :size="40" /></div>
             <div class="empty-title">{{ $t('dashboard.noInvoices') }}</div>
             <div class="empty-desc">{{ $t('dashboard.createFirst') }}</div>
             <router-link to="/invoices/new" class="btn btn-primary">{{ $t('dashboard.newInvoice') }}</router-link>
@@ -111,6 +111,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
+import { FileText } from 'lucide-vue-next';
 import { useI18n } from 'vue-i18n';
 import {
   getDashboardStats, getInvoices, getMonthlyRevenue, getTopCustomers,

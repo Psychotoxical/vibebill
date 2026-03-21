@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="topbar">
-      <div class="topbar-title">❓ {{ $t('help.title') }}</div>
+      <div class="topbar-title">{{ $t('help.title') }}</div>
     </div>
 
     <div class="page-content">

@@ -3,7 +3,7 @@
     <div class="topbar">
       <div class="topbar-title">{{ $t('invoices.title') }}</div>
       <div class="topbar-actions">
-        <button class="btn btn-secondary" @click="exportCsv">📊 {{ $t('invoices.exportCsv') }}</button>
+        <button class="btn btn-secondary" @click="exportCsv"><Download :size="15" /> {{ $t('invoices.exportCsv') }}</button>
         <router-link to="/invoices/new" class="btn btn-primary">{{ $t('invoices.newInvoice') }}</router-link>
       </div>
     </div>
@@ -11,17 +11,10 @@
       <div class="toolbar">
         <div class="toolbar-left">
           <div class="search-bar" style="max-width: 260px; width: 100%">
-            <span class="search-icon">🔍</span>
+            <span class="search-icon"><Search :size="15" /></span>
             <input class="form-input" v-model="search" :placeholder="$t('invoices.searchPlaceholder')" />
           </div>
-          <select class="form-select" style="width: auto" v-model="filterStatus">
-            <option value="">{{ $t('status.allStatus') }}</option>
-            <option value="draft">{{ $t('status.draft') }}</option>
-            <option value="sent">{{ $t('status.sent') }}</option>
-            <option value="paid">{{ $t('status.paid') }}</option>
-            <option value="overdue">{{ $t('status.overdue') }}</option>
-            <option value="cancelled">{{ $t('status.cancelled') }}</option>
-          </select>
+          <AppSelect v-model="filterStatus" :options="statusFilterOptions" />
         </div>
       </div>
       <div class="card">
@@ -45,14 +38,12 @@
                 <td>{{ inv.seller_name }}</td>
                 <td>{{ formatDate(inv.date) }}</td>
                 <td>
-                  <select class="form-select" style="width: auto; padding: 2px 6px; font-size: 12px"
-                    :value="inv.status" @change="changeStatus(inv, ($event.target as HTMLSelectElement).value)">
-                    <option value="draft">{{ $t('status.draft') }}</option>
-                    <option value="sent">{{ $t('status.sent') }}</option>
-                    <option value="paid">{{ $t('status.paid') }}</option>
-                    <option value="overdue">{{ $t('status.overdue') }}</option>
-                    <option value="cancelled">{{ $t('status.cancelled') }}</option>
-                  </select>
+                  <AppSelect
+                    :model-value="inv.status"
+                    size="sm"
+                    :options="statusOptions"
+                    @change="v => changeStatus(inv, String(v))"
+                  />
                 </td>
                 <td class="text-right">
                   <div>{{ formatCurrency(inv.total_gross) }}</div>
@@ -62,17 +53,17 @@
                   </div>
                 </td>
                 <td class="actions-cell">
-                  <button v-if="inv.status !== 'paid' && inv.status !== 'sent'" class="btn btn-ghost btn-icon" @click="changeStatus(inv, 'paid')" :title="$t('invoices.markPaid')" style="color: var(--success)">✅</button>
-                  <button class="btn btn-ghost btn-icon" @click="exportPdf(inv)" :title="$t('invoices.exportPdf')">📄</button>
-                  <router-link :to="'/invoices/' + inv.id + '/edit'" class="btn btn-ghost btn-icon" :title="$t('common.edit')">✏️</router-link>
-                  <button class="btn btn-ghost btn-icon" @click="duplicate(inv)" :title="$t('invoices.duplicate')">📋</button>
-                  <button class="btn btn-ghost btn-icon" @click="confirmDelete(inv)" :title="$t('common.delete')">🗑️</button>
+                  <button v-if="inv.status !== 'paid' && inv.status !== 'sent'" class="btn btn-ghost btn-icon" @click="changeStatus(inv, 'paid')" :data-tooltip="$t('invoices.markPaid')" style="color: var(--success)"><CheckCircle :size="15" /></button>
+                  <button class="btn btn-ghost btn-icon" @click="exportPdf(inv)" :data-tooltip="$t('invoices.exportPdf')"><FileDown :size="15" /></button>
+                  <router-link :to="'/invoices/' + inv.id + '/edit'" class="btn btn-ghost btn-icon" :data-tooltip="$t('common.edit')"><Pencil :size="15" /></router-link>
+                  <button class="btn btn-ghost btn-icon" @click="duplicate(inv)" :data-tooltip="$t('invoices.duplicate')"><Copy :size="15" /></button>
+                  <button class="btn btn-ghost btn-icon" @click="confirmDelete(inv)" :data-tooltip="$t('common.delete')"><Trash2 :size="15" /></button>
                 </td>
               </tr>
             </tbody>
           </table>
           <div class="empty-state" v-else-if="!search && !filterStatus">
-            <div class="empty-icon">📋</div>
+            <div class="empty-icon"><FileText :size="40" /></div>
             <div class="empty-title">{{ $t('invoices.noInvoices') }}</div>
             <div class="empty-desc">{{ $t('invoices.createFirst') }}</div>
             <router-link to="/invoices/new" class="btn btn-primary">{{ $t('invoices.newInvoice') }}</router-link>
@@ -112,6 +103,8 @@ import {
 import { generateInvoicePdf } from '../utils/pdfGenerator';
 import { exportInvoicesCsv } from '../utils/csvExport';
 import { useToast } from '../composables/useToast';
+import { Download, Search, CheckCircle, FileDown, Pencil, Copy, Trash2, FileText } from 'lucide-vue-next';
+import AppSelect from '../components/AppSelect.vue';
 
 const { locale, t } = useI18n({ useScope: 'global' });
 const router = useRouter();
@@ -120,6 +113,23 @@ const invoices = ref<Invoice[]>([]);
 const search = ref('');
 const filterStatus = ref('');
 const deleteTarget = ref<Invoice | null>(null);
+
+const statusFilterOptions = computed(() => [
+  { value: '', label: t('status.allStatus') },
+  { value: 'draft', label: t('status.draft') },
+  { value: 'sent', label: t('status.sent') },
+  { value: 'paid', label: t('status.paid') },
+  { value: 'overdue', label: t('status.overdue') },
+  { value: 'cancelled', label: t('status.cancelled') },
+]);
+
+const statusOptions = computed(() => [
+  { value: 'draft', label: t('status.draft') },
+  { value: 'sent', label: t('status.sent') },
+  { value: 'paid', label: t('status.paid') },
+  { value: 'overdue', label: t('status.overdue') },
+  { value: 'cancelled', label: t('status.cancelled') },
+]);
 
 const filtered = computed(() => {
   let items = invoices.value;

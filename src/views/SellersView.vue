@@ -10,7 +10,7 @@
       <div class="toolbar">
         <div class="toolbar-left">
           <div class="search-bar" style="max-width: 320px; width: 100%">
-            <span class="search-icon">🔍</span>
+            <span class="search-icon"><Search :size="15" /></span>
             <input class="form-input" v-model="search" :placeholder="$t('sellers.searchPlaceholder')" />
           </div>
         </div>
@@ -41,15 +41,15 @@
                 <td>{{ s.email }}</td>
                 <td>{{ s.tax_id }}</td>
                 <td class="actions-cell">
-                  <button class="btn btn-ghost btn-sm" @click="exportYearly(s)" title="Jahresübersicht">📊</button>
-                  <button class="btn btn-ghost btn-sm" @click="openForm(s)" title="Bearbeiten">✏️</button>
-                  <button class="btn btn-ghost btn-sm" @click="confirmDelete(s)" title="Löschen">🗑️</button>
+                  <button class="btn btn-ghost btn-sm" @click="exportYearly(s)" data-tooltip="Jahresübersicht"><BarChart2 :size="15" /></button>
+                  <button class="btn btn-ghost btn-sm" @click="openForm(s)" data-tooltip="Bearbeiten"><Pencil :size="15" /></button>
+                  <button class="btn btn-ghost btn-sm" @click="confirmDelete(s)" data-tooltip="Löschen"><Trash2 :size="15" /></button>
                 </td>
               </tr>
             </tbody>
           </table>
           <div class="empty-state" v-else-if="!search">
-            <div class="empty-icon">🏢</div>
+            <div class="empty-icon"><Building2 :size="40" /></div>
             <div class="empty-title">{{ $t('sellers.noSellers') }}</div>
             <div class="empty-desc">{{ $t('sellers.createFirst') }}</div>
             <button class="btn btn-primary" @click="openForm()">{{ $t('sellers.newSeller') }}</button>
@@ -66,7 +66,7 @@
       <div class="modal modal-wide">
         <div class="modal-header">
           <h2>{{ editing ? $t('sellers.editSeller') : $t('sellers.newSellerTitle') }}</h2>
-          <button class="btn btn-ghost btn-icon" @click="confirmClose">✕</button>
+          <button class="btn btn-ghost btn-icon" @click="confirmClose"><X :size="16" /></button>
         </div>
         <div class="modal-body">
           <div class="form-group">
@@ -173,12 +173,12 @@
             <div class="form-group">
               <label class="form-label">{{ $t('sellers.pdfTemplate') }}</label>
               <div class="flex gap-2">
-                <select class="form-select" v-model="form.pdf_template" style="flex: 1">
-                  <option value="classic">Classic</option>
-                  <option value="modern">Modern</option>
-                  <option value="minimal">Minimal</option>
-                </select>
-                <button class="btn btn-secondary" @click="showPreview" title="Vorschau ansehen">👁️ Vorschau</button>
+                <AppSelect v-model="form.pdf_template" :options="[
+                  { value: 'classic', label: 'Classic' },
+                  { value: 'modern', label: 'Modern' },
+                  { value: 'minimal', label: 'Minimal' },
+                ]" style="flex: 1" />
+                <button class="btn btn-secondary" @click="showPreview" data-tooltip="Vorschau ansehen"><Eye :size="15" /> Vorschau</button>
               </div>
             </div>
           </div>
@@ -188,28 +188,25 @@
           <div class="form-row-3">
             <div class="form-group">
               <label class="form-label">{{ $t('settings.defaultPaymentTerms') }}</label>
-              <select class="form-select" v-model="form.default_payment_terms">
-                <option value="">{{ $t('common.choose') || '—' }}</option>
-                <option value="Sofort fällig">{{ $t('invoiceForm.paymentImmediate') }}</option>
-                <option value="7 Tage netto">{{ $t('invoiceForm.payment7') }}</option>
-                <option value="14 Tage netto">{{ $t('invoiceForm.payment14') }}</option>
-                <option value="30 Tage netto">{{ $t('invoiceForm.payment30') }}</option>
-              </select>
+              <AppSelect v-model="form.default_payment_terms" :options="[
+                { value: 'Sofort fällig', label: $t('invoiceForm.paymentImmediate') },
+                { value: '7 Tage netto', label: $t('invoiceForm.payment7') },
+                { value: '14 Tage netto', label: $t('invoiceForm.payment14') },
+                { value: '30 Tage netto', label: $t('invoiceForm.payment30') },
+              ]" :placeholder="$t('common.choose') || '—'" />
             </div>
             <div class="form-group">
-              <label class="form-label">{{ $t('settings.defaultVat') }} (%)</label>
-              <input class="form-input" v-model.number="form.default_tax_rate" type="number" step="0.5" min="0"
-                max="100" />
+              <label class="form-label">{{ $t('settings.defaultVat') }}</label>
+              <AppSelect v-model="form.default_tax_rate" :options="TAX_RATE_OPTIONS" />
             </div>
             <div class="form-group">
               <label class="form-label">{{ $t('settings.currency') }}</label>
-              <select class="form-select" v-model="form.currency">
-                <option value="">—</option>
-                <option value="EUR">EUR (€)</option>
-                <option value="USD">USD ($)</option>
-                <option value="GBP">GBP (£)</option>
-                <option value="CHF">CHF</option>
-              </select>
+              <AppSelect v-model="form.currency" :options="[
+                { value: 'EUR', label: 'EUR (€)' },
+                { value: 'USD', label: 'USD ($)' },
+                { value: 'GBP', label: 'GBP (£)' },
+                { value: 'CHF', label: 'CHF' },
+              ]" placeholder="—" />
             </div>
           </div>
           <div class="form-group">
@@ -247,7 +244,7 @@
       <div class="modal modal-wide" style="max-width: 800px; height: 90vh; display: flex; flex-direction: column;">
         <div class="modal-header">
           <h2>PDF-Vorschau ({{ form.pdf_template }})</h2>
-          <button class="btn btn-ghost btn-icon" @click="previewPdfUrl = null">✕</button>
+          <button class="btn btn-ghost btn-icon" @click="previewPdfUrl = null"><X :size="16" /></button>
         </div>
         <div class="modal-body" style="flex: 1; padding: 0; min-height: 0;">
           <iframe :src="previewPdfUrl" style="width: 100%; height: 100%; border: none;"></iframe>
@@ -259,6 +256,9 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
+import { Search, BarChart2, Pencil, Trash2, Building2, Eye, X } from 'lucide-vue-next';
+import AppSelect from '../components/AppSelect.vue';
+import { TAX_RATE_OPTIONS } from '../utils/taxRates';
 import { useI18n } from 'vue-i18n';
 import { getSellers, createSeller, updateSeller, deleteSeller, getInvoices, type Seller } from '../services/database';
 import { useToast } from '../composables/useToast';

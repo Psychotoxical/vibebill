@@ -10,7 +10,7 @@
       <div class="toolbar">
         <div class="toolbar-left">
           <div class="search-bar" style="max-width: 320px; width: 100%">
-            <span class="search-icon">🔍</span>
+            <span class="search-icon"><Search :size="15" /></span>
             <input class="form-input" v-model="search" :placeholder="$t('customers.searchPlaceholder')" />
           </div>
         </div>
@@ -34,14 +34,14 @@
                 <td>{{ c.email }}</td>
                 <td>{{ c.phone }}</td>
                 <td class="actions-cell">
-                  <button class="btn btn-ghost btn-sm" @click="openForm(c)">✏️</button>
-                  <button class="btn btn-ghost btn-sm" @click="confirmDelete(c)">🗑️</button>
+                  <button class="btn btn-ghost btn-sm" @click="openForm(c)"><Pencil :size="15" /></button>
+                  <button class="btn btn-ghost btn-sm" @click="confirmDelete(c)"><Trash2 :size="15" /></button>
                 </td>
               </tr>
             </tbody>
           </table>
           <div class="empty-state" v-else-if="!search">
-            <div class="empty-icon">👥</div>
+            <div class="empty-icon"><Users :size="40" /></div>
             <div class="empty-title">{{ $t('customers.noCustomers') }}</div>
             <div class="empty-desc">{{ $t('customers.createFirst') }}</div>
             <button class="btn btn-primary" @click="openForm()">{{ $t('customers.newCustomer') }}</button>
@@ -58,7 +58,7 @@
       <div class="modal">
         <div class="modal-header">
           <h2>{{ editing ? $t('customers.editCustomer') : $t('customers.newCustomerTitle') }}</h2>
-          <button class="btn btn-ghost btn-icon" @click="confirmClose">✕</button>
+          <button class="btn btn-ghost btn-icon" @click="confirmClose"><X :size="16" /></button>
         </div>
         <div class="modal-body">
           <div class="form-group">
@@ -126,6 +126,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
+import { Search, Pencil, Trash2, Users, X } from 'lucide-vue-next';
 import { useI18n } from 'vue-i18n';
 import { getCustomers, createCustomer, updateCustomer, deleteCustomer, type Customer } from '../services/database';
 import { useToast } from '../composables/useToast';

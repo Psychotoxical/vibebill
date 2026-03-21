@@ -25,7 +25,7 @@ async function runJsMigrations(db: Database) {
     try {
       await db.execute(`ALTER TABLE sellers ADD COLUMN ${col}`);
     } catch (e) {
-      // Ignore "duplicate column name" errors
+      if (!String(e).toLowerCase().includes('duplicate column')) throw e;
     }
   }
 
@@ -38,7 +38,7 @@ async function runJsMigrations(db: Database) {
     try {
       await db.execute(`ALTER TABLE invoices ADD COLUMN ${col}`);
     } catch (e) {
-      // Ignore "duplicate column name" errors
+      if (!String(e).toLowerCase().includes('duplicate column')) throw e;
     }
   }
 }
