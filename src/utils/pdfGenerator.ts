@@ -12,7 +12,7 @@ function t(key: string, params?: Record<string, string | number>): string {
 
 export function buildInvoicePdfDoc(invoice: Invoice, seller: Seller, customer: Customer, locale: string): jsPDF {
 
-    const doc = new jsPDF('p', 'mm', 'a4');
+    const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4', compress: true });
     const pageWidth = 210;
     const margin = 20;
     const contentWidth = pageWidth - 2 * margin;
@@ -51,7 +51,7 @@ export function buildInvoicePdfDoc(invoice: Invoice, seller: Seller, customer: C
                 finalH = props.height * ratio;
             }
 
-            doc.addImage(seller.logo_data, 'PNG', margin, y, finalW, finalH);
+            doc.addImage(seller.logo_data, 'PNG', margin, y, finalW, finalH, 'logo', 'FAST');
         } catch (e) {
             // if image fails, skip
         }

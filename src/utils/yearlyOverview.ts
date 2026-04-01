@@ -9,7 +9,7 @@ export async function generateYearlyOverviewPdf(sellerId: number, year: number, 
     if (!seller) return;
 
     const locale = i18n.global.locale.value || 'de';
-    const doc = new jsPDF('p', 'mm', 'a4');
+    const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4', compress: true });
 
     const margin = 20;
     const pageWidth = 210;

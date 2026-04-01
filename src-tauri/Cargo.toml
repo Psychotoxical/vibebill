@@ -1,6 +1,6 @@
 [package]
 name = "vibebill"
-version = "1.0.29"
+version = "1.0.30"
 description = "Offline-first invoice management for freelancers and small businesses"
 authors = []
 edition = "2021"
